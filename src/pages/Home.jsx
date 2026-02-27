@@ -3,7 +3,6 @@ import { useAuth } from "../context/AuthContext";
 import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import "../styles/home.css";
-import "../styles/ramadanCard.css";
 import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import fireAnimation from "../assets/fire.json"; // you'll add this
