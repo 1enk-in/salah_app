@@ -1,0 +1,531 @@
+/* ==========================
+   PAGE BACKGROUND
+========================== */
+
+.ramadan-page {
+  min-height: 100vh;
+  padding: 60px 50px;
+  background: radial-gradient(circle at 30% 0%, #0f172a, #020617 70%);
+  color: white;
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+.ramadan-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* always center title */
+  margin-bottom: 60px;
+}
+
+.ramadan-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/* Back button pinned left */
+.ramadan-back {
+  position: absolute;
+  left: 0;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 18px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.ramadan-back:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+@media (max-width: 768px) {
+  .ramadan-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .ramadan-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+  .ramadan-back {
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 18px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+}
+
+/* ==========================
+   GRID
+========================== */
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 26px;
+}
+
+/* ==========================
+   BASE CARD
+========================== */
+
+.calendar-card {
+  padding: 24px;
+  border-radius: 20px;
+  transition: all 0.35s ease;
+  backdrop-filter: blur(14px);
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+
+  min-height: 140px;   /* ADD THIS */
+  display: flex;       /* ADD THIS */
+  flex-direction: column;  /* ADD THIS */
+  justify-content: space-between;  /* ADD THIS */
+}
+
+/* ==========================
+   PAST (ARCHIVED)
+========================== */
+
+.calendar-card.past {
+  background: linear-gradient(145deg, rgb(25 55 54 / 60%), rgba(10, 15, 25, 0.6));
+  color: rgba(255,255,255,0.35);
+  transform: scale(0.96);
+  cursor: pointer;
+}
+
+.calendar-card.past::after {
+  content: "Archived";
+  position: absolute;
+  bottom: 16px;
+  right: 18px;
+  font-size: 0.7rem;
+  opacity: 0.35;
+}
+
+/* ==========================
+   UPCOMING (LOCKED)
+========================== */
+
+.calendar-card.upcoming {
+  background: linear-gradient(
+    145deg,
+    rgba(40,40,40,0.7),
+    rgba(20,20,20,0.7)
+  );
+  color: rgba(255,255,255,0.5);
+  pointer-events: none;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.left-header {
+      color: #dda71ebd;
+      text-shadow: 0 0 10px rgb(255 90 0 / 30%);
+
+}
+
+.right-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lock-icon {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+
+
+
+
+/* ==========================
+   TODAY (FOCUS STATE)
+========================== */
+
+.calendar-card.today {
+  background: linear-gradient(
+    145deg,
+    #2563eb,
+    #1e40af
+  );
+
+  box-shadow:
+    0 0 40px rgba(59,130,246,0.6),
+    0 25px 60px rgba(0,0,0,0.7);
+
+  /* REMOVE SCALE */
+  transform: translateY(-4px);
+
+  z-index: 2;
+  cursor: pointer;
+}
+
+.today-indicator {
+  margin-top: 14px;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  opacity: 0.9;
+}
+
+/* ==========================
+   CARD CONTENT
+========================== */
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.greg {
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* ==========================
+   OVERLAY
+========================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(14px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.25s ease;
+}
+
+/* ==========================
+   MODAL CARD
+========================== */
+
+.prayer-modal {
+  width: 380px;
+  padding: 35px;
+  border-radius: 28px;
+
+  background: linear-gradient(145deg, #081225, #0f1f3d);
+
+  border: 1px solid rgba(250, 204, 21, 0.25);
+
+  box-shadow:
+    0 30px 90px rgba(0,0,0,0.9),
+    0 0 40px rgba(250,204,21,0.15);
+
+  animation: popIn 0.25s ease;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0 }
+  to { transform: scale(1); opacity: 1 }
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+.prayer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.prayer-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #facc15;
+}
+
+.close-btn {
+  background: rgba(255,255,255,0.05);
+  border: none;
+  color: white;
+  width: 50px;
+    height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ==========================
+   PRAYER LIST
+========================== */
+
+.prayer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ==========================
+   PRAYER ROW
+========================== */
+
+.prayer-row {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.prayer-row:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* STATUS COLORS */
+
+.prayer-row.green {
+  background: linear-gradient(135deg, #14532d, #15803d);
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.4);
+}
+
+.prayer-row.yellow {
+  background: linear-gradient(135deg, #78350f, #ca8a04);
+  box-shadow: 0 10px 25px rgba(202, 138, 4, 0.4);
+}
+
+.prayer-row.red {
+  background: linear-gradient(135deg, #7f1d1d, #b91c1c);
+  box-shadow: 0 10px 25px rgba(185, 28, 28, 0.4);
+}
+
+/* ==========================
+   PRAYER TEXT
+========================== */
+
+.prayer-name {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: #e6e6e6;
+}
+
+/* ==========================
+   STATUS BADGE
+========================== */
+
+.status-badge {
+  margin-top: 4px;
+  margin-left: 6px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  width: fit-content;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.status-badge.on_time {
+  background: rgba(0, 200, 120, 0.15);
+  color: #00c076;
+}
+
+.status-badge.qaza {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffbf00;
+}
+
+.status-badge.missed {
+  background: rgba(255, 70, 70, 0.15);
+  color: #ff4d4d;
+}
+
+/* ==========================
+   CIRCLE
+========================== */
+
+.circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #facc15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #facc15;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.circle:hover {
+  background: rgba(255, 204, 0, 0.1);
+}
+
+/* ==========================
+   PREMIUM IOS STYLE
+========================== */
+
+.compact-sheet {
+  margin-top: 8px;
+  margin-left: 8px;
+  padding: 10px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  animation: springOpen 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* SPRING OPEN */
+
+@keyframes springOpen {
+  0% { opacity: 0; transform: scale(0.9); }
+  60% { transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ==========================
+   SEGMENT CONTROL
+========================== */
+
+.status-segment {
+  position: relative;
+  display: flex;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  padding: 4px;
+  overflow: hidden;
+}
+
+/* SLIDING INDICATOR */
+
+.segment-indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(33.333% - 4px);
+  height: calc(100% - 8px);
+  border-radius: 999px;
+
+  background: white;
+
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* BUTTONS */
+
+.segment-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 2;
+  color: rgba(255,255,255,0.7);
+
+  transition: transform 0.15s ease, color 0.2s ease;
+}
+
+/* ACTIVE TEXT */
+
+.segment-btn.active {
+  color: #111;
+}
+
+/* TAP BOUNCE */
+
+.segment-btn:active {
+  transform: scale(0.93);
+}
+
+/* ==========================
+   MODE PILLS
+========================== */
+
+.mode-toggle {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.mode-pill {
+  flex: 1;
+  padding: 8px;
+  font-size: 12px;
+  border-radius: 999px;
+  cursor: pointer;
+
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.85);
+
+  border: 1px solid rgba(255,255,255,0.15);
+
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* HAPTIC MICRO EFFECT */
+
+.mode-pill:active {
+  transform: scale(0.95);
+}
+
+/* ACTIVE MODE */
+
+.mode-pill.active-mode {
+  background: white;
+  color: #111;
+  border-color: transparent;
+
+  animation: subtleBounce 0.3s ease;
+}
+
+@keyframes subtleBounce {
+  0% { transform: scale(0.9); }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
