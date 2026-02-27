@@ -591,32 +591,32 @@ const quickFeatures = [
     id: "tracker",
     title: "Creator",
     subtitle: "Track Everything",
-    image: "src/assets/tracker.png"
+    image: "/assets/tracker.png"
   },
   {
     id: "qibla",
     title: "Qibla",
     subtitle: "Find direction",
-    image: "src/assets/qibla.png"
+    image: "/assets/qibla.png"
   },
   {
     id: "tasbih",
     title: "Tasbih",
     subtitle: "Digital dhikr counter",
-    image: "src/assets/tasbih.png"
+    image: "/assets/tasbih.png"
   },
   {
     id: "calendar",
     title: "Calendar",
     subtitle: "Islamic dates",
-    image: "src/assets/calendar.png",
+    image: "/assets/calendar.png",
     action: () => setScreen("ramadan")
   },
   {
     id: "mosque",
     title: "Nearby Mosque",
     subtitle: "Find masjid",
-    image: "src/assets/mosque.png"
+    image: "/assets/mosque.png"
   }
 ];
 
@@ -802,7 +802,7 @@ const activePrayer =
     >
       {hasOffset
         ? `${offsetVal > 0 ? "+" : ""}${offsetVal} min applied`
-        : "Offset inactive"}
+        : "Set Offset"}
     </div>
   );
 })()}
@@ -873,48 +873,48 @@ const activePrayer =
     >
       {activePrayerName === "Fajr" && (
         <div className="fajr-scene">
-          <img src="src/assets/fajr/moon.png" className="fajr-moon" />
-          <img src="src/assets/fajr/cloud1.png" className="fajr-cloud fajr-cloud1" />
-          <img src="src/assets/fajr/cloud2.png" className="fajr-cloud fajr-cloud2" />
-          <img src="src/assets/fajr/small-cloud.png" className="fajr-small-cloud" />
-          <img src="src/assets/fajr/star1.png" className="fajr-star fajr-star1" />
-          <img src="src/assets/fajr/star2.png" className="fajr-star fajr-star2" />
-          <img src="src/assets/fajr/star3.png" className="fajr-star fajr-star3" />
+          <img src="/assets/fajr/moon.png" className="fajr-moon" />
+          <img src="/assets/fajr/cloud1.png" className="fajr-cloud fajr-cloud1" />
+          <img src="/assets/fajr/cloud2.png" className="fajr-cloud fajr-cloud2" />
+          <img src="/assets/fajr/small-cloud.png" className="fajr-small-cloud" />
+          <img src="/assets/fajr/star1.png" className="fajr-star fajr-star1" />
+          <img src="/assets/fajr/star2.png" className="fajr-star fajr-star2" />
+          <img src="/assets/fajr/star3.png" className="fajr-star fajr-star3" />
         </div>
       )}
 
       {activePrayerName === "Dhuhr" && (
         <div className="dhuhr-scene">
-          <img src="src/assets/dhuhr/sun.png" className="dhuhr-sun" />
-          <img src="src/assets/dhuhr/cloud.png" className="dhuhr-cloud main-cloud" />
-          <img src="src/assets/dhuhr/cloud-small.png" className="dhuhr-small small" />
+          <img src="/assets/dhuhr/sun.png" className="dhuhr-sun" />
+          <img src="/assets/dhuhr/cloud.png" className="dhuhr-cloud main-cloud" />
+          <img src="/assets/dhuhr/cloud-small.png" className="dhuhr-small small" />
         </div>
       )}
 
       {activePrayerName === "Asr" && (
         <div className="asr-scene">
-          <img src="src/assets/asr/sun.png" className="asr-sun" />
-          <img src="src/assets/asr/cloud1.png" className="asr-cloud asr-cloud1" />
-          <img src="src/assets/asr/cloud2.png" className="asr-cloud asr-cloud2" />
+          <img src="/assets/asr/sun.png" className="asr-sun" />
+          <img src="/assets/asr/cloud1.png" className="asr-cloud asr-cloud1" />
+          <img src="/assets/asr/cloud2.png" className="asr-cloud asr-cloud2" />
         </div>
       )}
 
       {activePrayerName === "Maghrib" && (
         <div className="maghrib-scene">
-          <img src="src/assets/maghrib/sun.png" className="maghrib-sun" />
-          <img src="src/assets/maghrib/cloud1.png" className="maghrib-cloud maghrib-cloud1" />
-          <img src="src/assets/maghrib/cloud2.png" className="maghrib-cloud maghrib-cloud2" />
+          <img src="/assets/maghrib/sun.png" className="maghrib-sun" />
+          <img src="/assets/maghrib/cloud1.png" className="maghrib-cloud maghrib-cloud1" />
+          <img src="/assets/maghrib/cloud2.png" className="maghrib-cloud maghrib-cloud2" />
         </div>
       )}
 
       {activePrayerName === "Isha" && (
         <div className="isha-scene">
-          <img src="src/assets/isha/moon.png" className="isha-moon" />
-          <img src="src/assets/isha/cloud1.png" className="isha-cloud isha-cloud1" />
-          <img src="src/assets/isha/cloud2.png" className="isha-cloud isha-cloud2" />
-          <img src="src/assets/isha/star1.png" className="isha-star isha-star1" />
-          <img src="src/assets/isha/star2.png" className="isha-star isha-star2" />
-          <img src="src/assets/isha/star3.png" className="isha-star isha-star3" />
+          <img src="/assets/isha/moon.png" className="isha-moon" />
+          <img src="/assets/isha/cloud1.png" className="isha-cloud isha-cloud1" />
+          <img src="/assets/isha/cloud2.png" className="isha-cloud isha-cloud2" />
+          <img src="/assets/isha/star1.png" className="isha-star isha-star1" />
+          <img src="/assets/isha/star2.png" className="isha-star isha-star2" />
+          <img src="/assets/isha/star3.png" className="isha-star isha-star3" />
         </div>
       )}
     </motion.div>
