@@ -200,6 +200,8 @@ function Home({ setScreen }) {
   const [todayTimes, setTodayTimes] = useState([]);
 const [showProfileSheet, setShowProfileSheet] = useState(false);
 const [profileImage, setProfileImage] = useState(null);
+const [profilePhoto, setProfilePhoto] = useState(null);
+const [city, setCity] = useState("");
 const [headerExpanded, setHeaderExpanded] = useState(false);
 const uiActive = headerExpanded || showProfileSheet;
 const [activeNav, setActiveNav] = useState("home");
@@ -316,6 +318,8 @@ async function handleThemeChange(key) {
 
       if (snap.exists()) {
   const data = snap.data();
+  setProfilePhoto(data.photoURL || null);
+setCity(data.city || "Mumbai");
 
   const finalUsername =
     data.username ||
@@ -734,14 +738,27 @@ if (showWelcome) {
   <div className="header-top-row">
 
     <div
-      className="avatar"
-      onClick={() => {
-  if (showProfileSheet) {
-    setShowProfileSheet(false);
+  className="avatar"
+  style={
+    !profilePhoto
+      ? { background: theme.headerGradient }
+      : {}
   }
-  setHeaderExpanded(prev => !prev);
-}}
-    />
+  onClick={() => {
+    if (showProfileSheet) {
+      setShowProfileSheet(false);
+    }
+    setHeaderExpanded(prev => !prev);
+  }}
+>
+  {profilePhoto ? (
+    <img src={profilePhoto} alt="Profile" />
+  ) : (
+    <div className="avatar-initial">
+      {username?.charAt(0).toUpperCase() || "U"}
+    </div>
+  )}
+</div>
 
     <div className="name">
       {username}
@@ -830,8 +847,8 @@ if (showWelcome) {
   {/* TOP ROW */}
   <div className="prayer-top">
     <div className="prayer-location">
-      📍 Mumbai
-    </div>
+  📍 {city}
+</div>
 
     <div className="prayer-date">
       {new Date().toLocaleDateString("en-IN", {
