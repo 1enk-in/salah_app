@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ramadan2026 } from "../data/ramadan2026";
 import PrayerModal from "../components/PrayerModal";
-import "../styles/ramadanPage.css";
+import "../styles/RamadanPage.css";
 
 export default function RamadanPage({ setScreen }) {
   const now = new Date();
