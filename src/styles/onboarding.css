@@ -356,61 +356,6 @@
   box-shadow: 0 14px 35px rgba(255,75,110,0.35);
 }
 
-/* ===============================
-   PRAYER SLIDE
-================================ */
-
-.prayer-container {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-top: 10px;
-}
-
-.prayer-card {
-  background: #f8fafc;
-  border-radius: 18px;
-  padding: 14px 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: 0.2s ease;
-}
-
-.prayer-card:hover {
-  background: #eef2f7;
-}
-
-.prayertime-name {
-  font-weight: 600;
-  color: #1e293b;
-}
-
-.prayer-time input {
-  border: none;
-  background: transparent;
-  font-weight: 600;
-  font-size: 14px;
-  outline: none;
-}
-
-.finish-btn {
-  margin-top: 25px;
-  padding: 14px;
-  border-radius: 30px;
-  border: none;
-  background: linear-gradient(135deg, #16a34a, #22c55e);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.25s ease;
-}
-
-.finish-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(34,197,94,0.3);
-}
-
 .uploading-screen {
   display: flex;
   flex-direction: column;
@@ -998,144 +943,376 @@
 
 .detect-location-btn {
   width: 100%;
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 14px;
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 16px;
   border: none;
-  background: rgba(255,255,255,0.2);
+  background: linear-gradient(135deg, #5b7cff, #3b59d1);
   color: white;
-  font-weight: 500;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 15px;
   cursor: pointer;
-  transition: 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
 .detect-location-btn:hover {
-  background: rgba(255,255,255,0.3);
+  transform: translateY(-2px);
 }
 
-
-
-/* PRAYER SLIDE */
-
-.odin-slide-page {
-  height: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-radius: 30px;
-    padding: 28px;
-    margin-top: 5px;
-    color: white;
+.detect-location-btn:active {
+  transform: scale(0.97);
 }
 
-.odin-slide {
-  background: linear-gradient(180deg, #d7d7d76e, #323738);
-  overflow: hidden;
+.detect-location-btn.loading {
+  opacity: 0.8;
+  cursor: not-allowed;
 }
 
-.location-display {
+.btn-loader {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.location-icon-wrapper {
   position: relative;
-    bottom: 5px;
-    margin-top: 5px;
-    font-size: 15px;
-    font-weight: 600;
-    opacity: 0.95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.timezone-display {
-  font-size: 12px;
-  opacity: 0.7;
+.location-icon {
+  width: 16px;
+  height: 16px;
+  z-index: 2;
+  animation: floatPin 2s ease-in-out infinite;
 }
 
-/* ========================= */
-/* BOTTOM PANEL */
-/* ========================= */
+.location-ring {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  animation: pulseRing 2s infinite;
+}
 
-.bottom-panel-odin {
-  margin-bottom: 30px;
+@keyframes floatPin {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.6;
+  }
+  70% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ===============================
+   ODIN ONBOARDING PRAYER SLIDE
+================================ */
+
+.odin-onboard-page {
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 30px;
+  padding: 28px;
+  margin-top: 5px;
+  color: white;
+}
+
+.odin-onboard-bg {
+  background: linear-gradient(180deg, #d7d7d76e, #323738);
+}
+
+/* HEADER */
+
+.odin-header {
+  text-align: center;
+}
+
+.odin-location {
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.95;
+  margin-bottom: 6px;
+}
+
+/* ILLUSTRATION */
+
+.odin-illustration {
+  height: 28%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* PANEL */
+
+.odin-panel {
   border-radius: 24px;
   padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
-.text-block-odin {
-  text-align: center;
-}
+/* LIST */
 
-/* ========================= */
-/* PRAYER CARDS */
-/* ========================= */
-
-.prayer-list {
+.odin-prayer-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin-bottom: 24px;
+  gap: 12px;
 }
 
-.prayer-card-odin {
+.odin-prayer-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 16px;
+  padding: 12px 18px;
   border-radius: 16px;
-  background: rgba(255,255,255,0.2);
-  backdrop-filter: blur(6px);
+  background: rgba(255,255,255,0.12);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
-.prayer-name {
+.odin-prayer-row:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+.odin-prayer-left {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 600;
+  gap: 12px;
+}
+
+.odin-prayer-name {
   font-size: 15px;
+  font-weight: 500;
 }
 
-.prayer-icon {
-  font-size: 16px;
-}
-
-.time-input-odin {
-  border: none;
-  background: transparent;
-  color: white;
+.odin-prayer-time {
+  font-size: 15px;
   font-weight: 600;
-  font-size: 14px;
-  outline: none;
+  opacity: 0.95;
 }
 
-/* ========================= */
-/* FINISH BUTTON */
-/* ========================= */
+/* ACTIVE GLOW */
 
-.primary-odin-btn {
-  width: 100%;
+.active-prayer {
+  background: linear-gradient(
+    135deg,
+    rgba(124, 140, 255, 0.35),
+    rgba(176, 108, 255, 0.35)
+  );
+  box-shadow:
+    0 0 18px rgba(124, 140, 255, 0.5),
+    0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* ACTIVE PRAYER BASE */
+
+.active-prayer {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(124, 140, 255, 0.25),
+    rgba(176, 108, 255, 0.25)
+  );
+  box-shadow:
+    0 0 20px rgba(124, 140, 255, 0.4),
+    0 8px 25px rgba(0,0,0,0.4);
+  animation: glowPulse 2.4s ease-in-out infinite;
+  overflow: hidden;
+}
+
+/* GLOW ANIMATION */
+
+@keyframes glowPulse {
+  0% {
+    box-shadow:
+      0 0 10px rgba(124,140,255,0.3),
+      0 8px 25px rgba(0,0,0,0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 28px rgba(176,108,255,0.7),
+      0 12px 35px rgba(0,0,0,0.5);
+  }
+  100% {
+    box-shadow:
+      0 0 10px rgba(124,140,255,0.3),
+      0 8px 25px rgba(0,0,0,0.4);
+  }
+}
+
+/* SHIMMER EFFECT */
+
+.active-prayer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.35),
+    transparent
+  );
+
+  transform: skewX(-20deg);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -120%;
+  }
+  60% {
+    left: 120%;
+  }
+  100% {
+    left: 120%;
+  }
+}
+
+/* BUTTON */
+
+.odin-finish-btn {
   padding: 14px;
-  border-radius: 18px;
+  border-radius: 20px;
   border: none;
   font-weight: 600;
-  font-size: 15px;
-  background: white;
-  color: #b8860b;
+  font-size: 16px;
+  color: white;
+  background: linear-gradient(90deg, #7c8cff, #b06cff);
   cursor: pointer;
-  transition: 0.25s ease;
+  transition: all 0.3s ease;
 }
 
-.primary-odin-btn:hover {
+.odin-finish-btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(124,140,255,0.4);
 }
 
-.illustration-area-prayer {
-  height: 28%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: -15px;
-    margin-top: 10px;
+.odin-prayer-left svg {
+  opacity: 0.85;
+  transition: transform 0.3s ease;
 }
+
+.active-prayer svg {
+  transform: scale(1.08);
+  opacity: 1;
+}
+
+/* HEADER UPGRADE */
+
+.odin-header {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.region-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.9;
+  margin: 12px auto 8px auto;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow:
+    0 4px 15px rgba(0,0,0,0.3);
+}
+
+.region-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff6b6b;
+  position: relative;
+  z-index: 2;
+}
+
+/* FIRST RING */
+.region-dot::before,
+.region-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(255, 107, 107, 0.5);
+  z-index: -1;
+}
+
+/* Ring 1 */
+.region-dot::before {
+  animation: radarWave 3s ease-out infinite;
+}
+
+/* Ring 2 (delayed for continuous effect) */
+.region-dot::after {
+  animation: radarWave 3s ease-out infinite;
+  animation-delay: 1.5s;
+}
+
+@keyframes radarWave {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  70% {
+    transform: scale(3.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(3.5);
+    opacity: 0;
+  }
+}
+
+.prayer-title-main {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.prayer-subtitle {
+  font-size: 13px;
+  opacity: 0.75;
+  margin-top: 6px;
+}
+
+/* OTHERS */
 
 .hero-lottie-prayer {
   width: 180px;

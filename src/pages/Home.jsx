@@ -642,7 +642,6 @@ const activePrayer =
        {/* HEADER */}
     {/* HEADER */}
 <motion.div
-  layout
   drag="y"
   dragDirectionLock
   dragConstraints={{ top: 0, bottom: 0 }}

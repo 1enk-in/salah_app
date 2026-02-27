@@ -257,11 +257,33 @@ export default function LocationSlide({
 
   {/* 🔥 INSERT HERE */}
   <button
-    className="detect-location-btn"
-    onClick={handleDetectLocation}
-  >
-    📍 Detect My Location
-  </button>
+  className={`detect-location-btn ${loading ? "loading" : ""}`}
+  onClick={handleDetectLocation}
+  disabled={loading}
+>
+  {loading ? (
+  <>
+    <span className="btn-loader"></span>
+    Detecting...
+  </>
+  ) : (
+    <>
+      <span className="location-icon-wrapper">
+        <span className="location-ring"></span>
+        <svg
+          className="location-icon"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
+            fill="white"
+          />
+        </svg>
+      </span>
+      Detect My Location
+    </>
+  )}
+</button>
 
 </div>
 
