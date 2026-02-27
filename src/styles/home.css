@@ -1839,3 +1839,8 @@ html, body {
   z-index: 9998;
 }
 
+.header,
+.bottom-nav {
+  will-change: transform;
+  transform: translateZ(0);
+}

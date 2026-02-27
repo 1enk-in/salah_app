@@ -211,6 +211,7 @@ const [displayTime, setDisplayTime] = useState(nextPrayer?.time);
 const [manualPrayer, setManualPrayer] = useState(null);
 const [now, setNow] = useState(new Date());
 const [activeOffsetPrayer, setActiveOffsetPrayer] = useState(null);
+const isAndroid = /Android/i.test(navigator.userAgent);
 
   if (loading) {
   return <div style={{ color: "white" }}>Checking auth...</div>;
@@ -652,11 +653,19 @@ const activePrayer =
   }}
   className={`header ${headerExpanded ? "expanded fixed" : ""}`}
   style={{ background: theme.headerGradient }}
-  transition={{
-  type: "spring",
-  stiffness: 260,
-  damping: 16
-}}
+  transition={
+  isAndroid
+    ? {
+        duration: 0.35,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    : {
+        type: "spring",
+  stiffness: 180,
+  damping: 22,
+  mass: 0.6
+      }
+}
 >
 
   <div className="header-top-row">
@@ -1017,7 +1026,10 @@ const activePrayer =
   layout
   className={`bottom-nav ${showProfileSheet ? "expanded" : ""}`}
   style={{ background: theme.navBackground }}
-  transition={{ type: "spring", stiffness: 260, damping: 20 }}
+  transition={{
+  duration: 0.35,
+  ease: [0.22, 1, 0.36, 1] // smooth ease-out curve
+}}
 >
   {!showProfileSheet ? (
     <div className="nav-items-wrapper">
