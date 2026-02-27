@@ -16,47 +16,56 @@ export default function PrayerSlide({
   const { user, setUser } = useAuth();
 
   async function handleFinish() {
-    const usernameRef = doc(db, "usernames", username);
-    const userRef = doc(db, "users", user.uid);
+  const userRef = doc(db, "users", user.uid);
 
-    try {
-      await runTransaction(db, async (transaction) => {
+  try {
+    await runTransaction(db, async (transaction) => {
+
+      // 🔹 Only handle username if it exists
+      if (username && username.trim() !== "") {
+        const usernameRef = doc(db, "usernames", username.trim());
         const usernameSnap = await transaction.get(usernameRef);
 
         if (usernameSnap.exists()) {
           const existingUid = usernameSnap.data().uid;
+
           if (existingUid !== user.uid) {
             throw new Error("Username already taken");
           }
         }
 
-        transaction.set(usernameRef, { uid: user.uid });
+        transaction.set(usernameRef, {
+          uid: user.uid
+        });
+      }
 
-        transaction.set(
-          userRef,
-          {
-            username,
-            photoURL,
-            city,
-            timezone,
-            prayerTimes,
-            hasOnboarded: true
-          },
-          { merge: true }
-        );
-      });
+      // 🔹 Always save user data
+      const finalUsername =
+  username?.trim() ||
+  user.email?.split("@")[0];
 
-      setUser(prev => ({
-        ...prev,
-        username,
-        hasOnboarded: true
-      }));
+transaction.set(userRef, {
+  username: finalUsername,
+  photoURL,
+  city,
+  timezone,
+  prayerTimes,
+  hasOnboarded: true
+}, { merge: true });
+    });
 
-      onFinish();
-    } catch (err) {
-      console.error(err);
-    }
+    setUser(prev => ({
+      ...prev,
+      username: username || null,
+      hasOnboarded: true
+    }));
+
+    onFinish();
+
+  } catch (err) {
+    console.error(err);
   }
+}
 
   function getActivePrayer() {
     const now = new Date();

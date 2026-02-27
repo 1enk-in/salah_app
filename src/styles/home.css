@@ -1845,4 +1845,248 @@ html, body {
 }
 
 
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 30%, #1a2f5a 0%, #001233 50%, #000814 100%),
+    linear-gradient(180deg, #000814 0%, #001233 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow: hidden;
+}
 
+/* Subtle camera zoom */
+@keyframes subtleZoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.04);
+  }
+}
+
+.welcome-cinematic {
+  position: relative;
+  text-align: center;
+  color: white;
+  transform: scale(0.94);
+  animation: textPop 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes textPop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Arabic calligraphy background */
+.arabic-overlay {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  opacity: 0.04;
+  pointer-events: none;
+  filter: blur(1px);
+  mix-blend-mode: soft-light;
+}
+
+@keyframes fadeArabic {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.05;
+  }
+}
+
+/* Mosque silhouette */
+.mosque-bg {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  opacity: 0;
+  pointer-events: none;
+  animation: mosqueFade 2s ease forwards;
+}
+
+@keyframes mosqueFade {
+  to {
+    opacity: 0.07;
+  }
+}
+
+/* MAIN TEXT */
+.text-wrapper {
+  font-family: "Playfair Display", serif;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  position: relative;
+  color: #f5f5f5;
+
+  text-shadow:
+    0 2px 6px rgba(0,0,0,0.6),
+    0 10px 30px rgba(0,0,0,0.8),
+    0 0 18px rgba(255,255,255,0.12);
+
+  transform: translateZ(70px);
+  transform-style: preserve-3d;
+}
+
+.char {
+  display: inline-block;
+}
+
+/* Golden shimmer upgrade */
+.gold-shimmer {
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 215, 120, 0.9) 45%,
+    rgba(255, 235, 170, 0.6) 50%,
+    transparent 55%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+  filter: blur(6px);
+}
+
+/* Username */
+.welcome-sub {
+  margin-top: 18px;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  opacity: 0.6;
+  transform: translateZ(40px);
+}
+
+/* Subtle vignette */
+.welcome-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  pointer-events: none;
+}
+
+.welcome-3d-wrapper {
+  perspective: 1200px;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-cinematic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.4s ease;
+  perspective: 1000px;
+}
+
+.text-wrapper {
+  transform: translateZ(60px);
+}
+
+.mosque-bg {
+  transform: translateX(-50%) translateZ(20px);
+}
+
+.arabic-overlay {
+  transform: translateZ(-40px);
+}
+
+.light-sweep {
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 300%;
+  height: 100%;
+  background: linear-gradient(
+    110deg,
+    transparent 40%,
+    rgba(255,255,255,0.12) 50%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+@keyframes sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.welcome-meaning {
+  margin-top: 6px;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  opacity: 0.45;
+  letter-spacing: 0.8px;
+  transform: translateZ(35px);
+}
+
+.tap-continue {
+  position: absolute;
+  bottom: -130px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.6);
+
+  opacity: 0;
+  animation:
+    fadeIn 1s ease forwards,
+    pulseSoft 2.4s ease-in-out infinite 1s;
+}
+
+@keyframes fadeIn {
+  to { opacity: 0.6; }
+}
+
+@keyframes pulseSoft {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+}

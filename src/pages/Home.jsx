@@ -8,7 +8,7 @@ import Lottie from "lottie-react";
 import fireAnimation from "../assets/fire.json"; // you'll add this
 import { useTheme } from "../context/ThemeContext.jsx"
 import { themes } from "../theme/themes";
-
+import WelcomeScreen from "../components/WelcomeScreen";
 function SingleOffsetModal({
   prayer,
   onClose,
@@ -211,7 +211,10 @@ const [displayTime, setDisplayTime] = useState(nextPrayer?.time);
 const [manualPrayer, setManualPrayer] = useState(null);
 const [now, setNow] = useState(new Date());
 const [activeOffsetPrayer, setActiveOffsetPrayer] = useState(null);
+const [showWelcome, setShowWelcome] = useState(false);
+const [welcomeChecked, setWelcomeChecked] = useState(false);
 const isAndroid = /Android/i.test(navigator.userAgent);
+const [username, setUsername] = useState("");
 
   if (loading) {
   return <div style={{ color: "white" }}>Checking auth...</div>;
@@ -230,8 +233,33 @@ const [offsets, setOffsets] = useState({
 });
 
 useEffect(() => {
+  window.triggerWelcome = () => {
+    localStorage.setItem("forceWelcome", "true");
+    sessionStorage.removeItem("firstWelcome");
+    window.location.reload();
+  };
+
+  return () => {
+    delete window.triggerWelcome;
+  };
+}, []);
+
+useEffect(() => {
   setDisplayTime(nextPrayer?.time);
 }, [nextPrayer]);
+
+useEffect(() => {
+  const force = localStorage.getItem("forceWelcome");
+
+  const firstVisit = sessionStorage.getItem("firstWelcome");
+
+  if (force === "true" || !firstVisit) {
+    setShowWelcome(true);
+    sessionStorage.setItem("firstWelcome", "true");
+  }
+
+  setWelcomeChecked(true);
+}, []);
 
 useEffect(() => {
   function handleGlobalClick(e) {
@@ -285,6 +313,16 @@ async function handleThemeChange(key) {
 
     async function loadPrayerTimes() {
       const snap = await getDoc(doc(db, "users", user.uid));
+
+      if (snap.exists()) {
+  const data = snap.data();
+
+  const finalUsername =
+    data.username ||
+    user.email?.split("@")[0];
+
+  setUsername(finalUsername);
+}
 
       if (snap.exists() && snap.data().prayerTimes) {
   const raw = snap.data().prayerTimes;
@@ -630,6 +668,31 @@ const activePrayerName =
 // ✅ ADD THIS RIGHT HERE
 const activePrayer =
   todayTimes.find(p => p.name === activePrayerName) || nextPrayer;
+  
+  if (!welcomeChecked) return null;
+
+if (showWelcome) {
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="welcome-overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <WelcomeScreen
+  username={username}
+  onComplete={() => {
+    localStorage.removeItem("forceWelcome");
+    setShowWelcome(false);
+  }}
+/>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
   return (
     <motion.div
   className={`home theme-${currentTheme}`}
@@ -642,6 +705,7 @@ const activePrayer =
        {/* HEADER */}
     {/* HEADER */}
 <motion.div
+  layout
   drag="y"
   dragDirectionLock
   dragConstraints={{ top: 0, bottom: 0 }}
@@ -680,7 +744,7 @@ const activePrayer =
     />
 
     <div className="name">
-      {user.email?.split("@")[0]}
+      {username}
     </div>
 
     <div className="bell" onClick={logout}>
