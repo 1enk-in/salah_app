@@ -719,22 +719,17 @@ const activePrayer =
     <motion.div
   className="home-content"
   animate={{
-    scale: uiActive ? 0.96 : 1,
-    y: headerExpanded ? -20 : 0
+    y: headerExpanded ? 12 : 0
   }}
   transition={{
-    type: "spring",
-    stiffness: 200,
-    damping: 22
+    duration: 0.35,
+    ease: [0.22, 1, 0.36, 1]
   }}
 >
 
       {/* RAMADAN CARD */}
         <motion.div
   className="prayer-status-card"
-  animate={{
-    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
-  }}
   transition={{
     duration: 20,
     repeat: Infinity,
@@ -1297,10 +1292,10 @@ const activePrayer =
 
       <motion.div
   className="offset-modal-container"
-  initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-  animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
-  exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-  transition={{ duration: 0.4 }}
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  transition={{ duration: 0.25 }}
 >
         <SingleOffsetModal
           prayer={activeOffsetPrayer}

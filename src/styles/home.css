@@ -1611,7 +1611,6 @@ html, body {
   padding: 20px;
   z-index: 9999;
   pointer-events: none; /* allow overlay click */
-  filter: drop-shadow(0 60px 100px rgba(0,0,0,0.5));
 }
 
 .offset-overlay {
@@ -1844,3 +1843,6 @@ html, body {
   will-change: transform;
   transform: translateZ(0);
 }
+
+
+

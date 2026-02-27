@@ -31,3 +31,12 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+.header,
+.home-content,
+.prayer-status-card,
+.bottom-nav,
+.profile-content {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
