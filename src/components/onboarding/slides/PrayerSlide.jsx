@@ -50,7 +50,8 @@ transaction.set(userRef, {
   city,
   timezone,
   prayerTimes,
-  hasOnboarded: true
+  hasOnboarded: true,
+  hasSeenWelcome: false
 }, { merge: true });
     });
 

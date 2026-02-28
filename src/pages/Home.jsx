@@ -251,17 +251,24 @@ useEffect(() => {
 }, [nextPrayer]);
 
 useEffect(() => {
-  const force = localStorage.getItem("forceWelcome");
+  async function checkWelcome() {
+    if (!user) return;
 
-  const firstVisit = sessionStorage.getItem("firstWelcome");
+    const snap = await getDoc(doc(db, "users", user.uid));
 
-  if (force === "true" || !firstVisit) {
-    setShowWelcome(true);
-    sessionStorage.setItem("firstWelcome", "true");
+    if (!snap.exists()) return;
+
+    const data = snap.data();
+
+    if (data.hasOnboarded && data.hasSeenWelcome === false) {
+      setShowWelcome(true);
+    }
+
+    setWelcomeChecked(true);
   }
 
-  setWelcomeChecked(true);
-}, []);
+  checkWelcome();
+}, [user]);
 
 useEffect(() => {
   function handleGlobalClick(e) {
@@ -687,8 +694,11 @@ if (showWelcome) {
       >
         <WelcomeScreen
   username={username}
-  onComplete={() => {
-    localStorage.removeItem("forceWelcome");
+  onComplete={async () => {
+    await updateDoc(doc(db, "users", user.uid), {
+      hasSeenWelcome: true
+    });
+
     setShowWelcome(false);
   }}
 />
