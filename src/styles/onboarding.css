@@ -1312,6 +1312,13 @@
   margin-top: 6px;
 }
 
+/* LOADER */
+
+.blur-transition {
+  filter: blur(12px);
+  transition: filter 0.5s ease;
+}
+
 /* OTHERS */
 
 .hero-lottie-prayer {

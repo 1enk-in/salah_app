@@ -61,7 +61,12 @@ transaction.set(userRef, {
       hasOnboarded: true
     }));
 
-    onFinish();
+    document.body.classList.add("blur-transition");
+
+setTimeout(() => {
+  onFinish();
+  document.body.classList.remove("blur-transition");
+}, 500);
 
   } catch (err) {
     console.error(err);

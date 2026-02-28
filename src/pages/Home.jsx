@@ -9,6 +9,7 @@ import fireAnimation from "../assets/fire.json"; // you'll add this
 import { useTheme } from "../context/ThemeContext.jsx"
 import { themes } from "../theme/themes";
 import WelcomeScreen from "../components/WelcomeScreen";
+import AppLoader from "../components/AppLoader";
 function SingleOffsetModal({
   prayer,
   onClose,
@@ -217,9 +218,10 @@ const [showWelcome, setShowWelcome] = useState(false);
 const [welcomeChecked, setWelcomeChecked] = useState(false);
 const isAndroid = /Android/i.test(navigator.userAgent);
 const [username, setUsername] = useState("");
+const [showLoader, setShowLoader] = useState(true);
 
-  if (loading) {
-  return <div style={{ color: "white" }}>Checking auth...</div>;
+ if (loading) {
+  return <AppLoader onComplete={() => {}} />;
 }
 
 if (!user) {
@@ -260,7 +262,7 @@ useEffect(() => {
 
     const data = snap.data();
 
-    if (data.hasOnboarded && data.hasSeenWelcome === false) {
+    if (data.hasOnboarded && !data.hasSeenWelcome) {
       setShowWelcome(true);
     }
 
@@ -440,10 +442,6 @@ setCity(data.city || "Mumbai");
   setNextPrayer(upcoming);
 
 }, [prayerTimes, now, offsets]);
-
-  if (!prayerTimes) {
-  return <div style={{ color: "white" }}>Loading...</div>;
-}
 
 function exitManualMode() {
   setManualPrayer(null);
@@ -679,6 +677,14 @@ const activePrayerName =
 // ✅ ADD THIS RIGHT HERE
 const activePrayer =
   todayTimes.find(p => p.name === activePrayerName) || nextPrayer;
+
+  if (showLoader) {
+  return (
+    <AppLoader
+      onComplete={() => setShowLoader(false)}
+    />
+  );
+}
   
   if (!welcomeChecked) return null;
 
@@ -700,6 +706,7 @@ if (showWelcome) {
     });
 
     setShowWelcome(false);
+    setShowLoader(true);
   }}
 />
       </motion.div>
