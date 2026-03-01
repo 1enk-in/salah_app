@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Qaym</string>
+    <string name="title_activity_main">Qaym</string>
+    <string name="package_name">com.qaym.app</string>
+    <string name="custom_url_scheme">com.qaym.app</string>
+</resources>

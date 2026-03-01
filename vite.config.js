@@ -1,36 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      workbox: {
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024
-      },
-      manifest: {
-        name: 'Qaym',
-        short_name: 'Qaym',
-        description: 'Your spiritual prayer companion',
-        theme_color: '#0b1220',
-        background_color: '#0b1220',
-        display: 'standalone',
-        orientation: 'portrait',
-        icons: [
-          {
-            src: '/assets/logo/qaym-192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: '/assets/logo/qaym-512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      }
-    })
-  ]
+  plugins: [react()],
+  build: {
+    outDir: 'dist'
+  }
 })

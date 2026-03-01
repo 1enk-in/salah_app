@@ -92,14 +92,14 @@ export default function AppLoader({ onComplete }) {
     >
 
       {/* LOGO WRAPPER */}
-<div className="logo-wrapper">
+<div className="loader-logo-wrapper">
 
   {/* Ambient Glow Behind Logo */}
   <div className="logo-glow" />
 
   {/* FULL LOGO */}
   <motion.img
-    src="/assets/logo/qaym-full-logo.png"
+    src="/assets/logo/qaym-full-logo.webp"
     className="loader-logo"
     initial={{ scale: 0.92, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}

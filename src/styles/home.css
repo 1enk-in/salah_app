@@ -130,7 +130,7 @@ html, body {
 .header-overlay {
   position: fixed;
   inset: 0;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(6px);
   background: rgba(0,0,0,0.4);
   z-index: 40;
 }
@@ -1634,7 +1634,7 @@ html, body {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.45);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(6px);
   z-index: 9998;
 }
 
@@ -1674,7 +1674,7 @@ html, body {
   content: "";
   position: absolute;
   inset: 0;
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(20px);
   background: linear-gradient(
     180deg,
     rgba(255,255,255,0.15),
@@ -2135,7 +2135,7 @@ html, body {
   position: absolute;
   inset: 0;
 
-  background-image: url("/assets/logo/islamic-pattern.png");
+  background-image: url("/assets/logo/islamic-pattern.webp");
   background-size: 420px;
   background-repeat: repeat;
 
@@ -2217,7 +2217,7 @@ html, body {
   z-index: 2;
 }
 
-.logo-wrapper {
+.loader-logo-wrapper {
   position: relative;
   display: flex;
   align-items: center;
@@ -2242,3 +2242,360 @@ html, body {
   z-index: 1;
 }
 
+
+
+
+/* ===============================
+   OVERLAY
+================================= */
+.city-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  z-index: 90;
+  transition: 0.3s ease;
+}
+
+/* ===============================
+   MODAL SHEET
+================================= */
+.city-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+
+  height: 88%;
+  z-index: 100;
+
+  background: rgba(18, 18, 18, 0.92);
+  backdrop-filter: blur(28px);
+
+  border-radius: 30px 30px 0 0;
+  padding: 18px 20px 30px;
+  padding-right: 44px;
+
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  box-shadow:
+    0 -30px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Hide scrollbar */
+.city-modal::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===============================
+   SHEET HANDLE
+================================= */
+.sheet-handle {
+  width: 42px;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0 auto 16px;
+}
+
+/* ===============================
+   HEADER
+================================= */
+.city-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.city-header-row h3 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: none;
+
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-size: 16px;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ===============================
+   SEARCH
+================================= */
+.city-search-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.city-search {
+  width: 100%;
+  padding: 14px 16px 14px 40px;
+  border-radius: 22px;
+  border: none;
+
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-size: 15px;
+
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.city-search:focus {
+  background: rgba(255,255,255,0.12);
+  box-shadow:
+    inset 0 0 0 1px rgba(120,120,255,0.4),
+    0 0 12px rgba(120,120,255,0.3);
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+  font-size: 14px;
+}
+
+/* ===============================
+   SECTION TITLES
+================================= */
+.section-title {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin: 18px 0 10px;
+}
+
+/* ===============================
+   CURRENT LOCATION
+================================= */
+.current-location-card {
+  padding: 16px 18px;
+  border-radius: 22px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.04)
+  );
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  box-shadow:
+    0 6px 20px rgba(0,0,0,0.25);
+}
+
+.current-location-card:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.current-location-card .relocate {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ===============================
+   POPULAR CITIES
+================================= */
+.popular-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.popular-chip {
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 14px;
+  font-size: 14px;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.popular-chip:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+
+/* ===============================
+   ALPHABET LIST
+================================= */
+.city-section-list {
+  margin-top: 12px;
+}
+
+.alphabet-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+
+  width: fit-content;         /* 🔥 shrink width */
+  padding: 6px 14px;
+  margin: 12px 0 6px 6px;     /* left aligned */
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+
+  border-radius: 14px;
+
+  color: rgba(255,255,255,0.85);
+
+  background: linear-gradient(
+    135deg,
+    rgba(90,130,255,0.25),
+    rgba(130,90,255,0.25)
+  );
+
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.city-row {
+  padding: 14px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border-radius: 18px;
+
+  transition: 0.2s ease;
+  cursor: pointer;
+}
+
+.list-city-main {
+  font-size: 15px;
+  font-weight: 600;
+  color: #d0d0d0;
+}
+
+.list-city-sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+}
+
+.city-row.selected {
+  background: linear-gradient(
+    135deg,
+    rgba(100,130,255,0.25),
+    rgba(150,100,255,0.25)
+  );
+  box-shadow: 0 0 18px rgba(120,100,255,0.3);
+}
+
+/* ===============================
+   SIDE ALPHABET INDEX
+================================= */
+.alphabet-index {
+  position: fixed;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  padding: 6px 4px;
+
+  border-radius: 14px;
+
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(12px);
+
+  z-index: 1000;
+}
+
+.alphabet-index span {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  transition: 0.18s ease;
+}
+
+.alphabet-index span.active-letter {
+  color: #7ea6ff;
+  transform: scale(1.3);
+}
+
+.alphabet-index span:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.alphabet-index::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
+  z-index: -1;
+}
+
+/* ===============================
+   DETECT BUTTON
+================================= */
+.detect-btn {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 22px;
+  border: none;
+
+  background: linear-gradient(
+    135deg,
+    #3a6df0,
+    #6f4ef6
+  );
+
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+
+  box-shadow:
+    0 8px 20px rgba(100,120,255,0.35);
+
+  transition: 0.25s ease;
+}
+
+.detect-btn:active {
+  transform: scale(0.97);
+}
+
+.detect-btn:hover {
+  transform: translateY(-2px);
+}
+
+.location-arrow {
+  margin-left: -4px;
+  opacity: 0.7;
+  transition: 0.25s ease;
+}
+
+.prayer-location:hover .location-arrow {
+  opacity: 1;
+  transform: translateY(2px);
+}

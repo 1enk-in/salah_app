@@ -10,6 +10,8 @@ import { useTheme } from "../context/ThemeContext.jsx"
 import { themes } from "../theme/themes";
 import WelcomeScreen from "../components/WelcomeScreen";
 import AppLoader from "../components/AppLoader";
+import { Geolocation } from "@capacitor/geolocation";
+import { indianCities } from "../data/indianCities";
 function SingleOffsetModal({
   prayer,
   onClose,
@@ -195,7 +197,6 @@ function haptic(type = "light") {
 
 function Home({ setScreen }) {
   const { user, loading, logout  } = useAuth();
-
   const [nextPrayer, setNextPrayer] = useState(null);
   const [prayerTimes, setPrayerTimes] = useState(null);
   const [todayTimes, setTodayTimes] = useState([]);
@@ -218,7 +219,11 @@ const [showWelcome, setShowWelcome] = useState(false);
 const [welcomeChecked, setWelcomeChecked] = useState(false);
 const isAndroid = /Android/i.test(navigator.userAgent);
 const [username, setUsername] = useState("");
-const [showLoader, setShowLoader] = useState(true);
+const [showCityModal, setShowCityModal] = useState(false);
+const [cityQuery, setCityQuery] = useState("");
+const [cityResults, setCityResults] = useState([]);
+const [cityLoading, setCityLoading] = useState(false);
+const [activeLetter, setActiveLetter] = useState(null);
 
  if (loading) {
   return <AppLoader onComplete={() => {}} />;
@@ -257,12 +262,12 @@ useEffect(() => {
     if (!user) return;
 
     const snap = await getDoc(doc(db, "users", user.uid));
-
     if (!snap.exists()) return;
 
     const data = snap.data();
 
     if (data.hasOnboarded && !data.hasSeenWelcome) {
+      // FIRST TIME USER
       setShowWelcome(true);
     }
 
@@ -271,6 +276,182 @@ useEffect(() => {
 
   checkWelcome();
 }, [user]);
+
+useEffect(() => {
+  if (cityQuery.length < 1) {
+    setCityResults([]);
+    return;
+  }
+
+  const lower = cityQuery.toLowerCase();
+
+  const filtered = indianCities
+    .filter(c => c.city.toLowerCase().includes(lower))
+    .slice(0, 8);
+
+  setCityResults(filtered);
+}, [cityQuery]);
+
+
+
+const groupedCities = indianCities.reduce((acc, cityObj) => {
+  const firstLetter = cityObj.city[0].toUpperCase();
+  if (!acc[firstLetter]) acc[firstLetter] = [];
+  acc[firstLetter].push(cityObj);
+  return acc;
+}, {});
+
+useEffect(() => {
+  if (!showCityModal) return;
+
+  const modal = document.querySelector(".city-modal");
+  if (!modal) return;
+
+  const headers = modal.querySelectorAll(".alphabet-header");
+
+  function handleScroll() {
+    let current = null;
+
+    headers.forEach(header => {
+      const rect = header.getBoundingClientRect();
+      const modalTop = modal.getBoundingClientRect().top;
+
+      if (rect.top - modalTop <= 60) {
+        current = header.textContent.trim();
+      }
+    });
+
+    setActiveLetter(current);
+  }
+
+  modal.addEventListener("scroll", handleScroll);
+
+  return () => modal.removeEventListener("scroll", handleScroll);
+}, [showCityModal]);
+
+function convertTo12(time24) {
+  const [hours, minutes] = time24.slice(0, 5).split(":");
+  let h = parseInt(hours);
+  let modifier = "AM";
+
+  if (h >= 12) {
+    modifier = "PM";
+    if (h > 12) h -= 12;
+  }
+
+  if (h === 0) h = 12;
+
+  return `${h}:${minutes} ${modifier}`;
+}
+
+function hapticLight() {
+  if (navigator.vibrate) navigator.vibrate(8);
+}
+
+async function fetchPrayerByCoords(lat, lon, detectedCity) {
+  try {
+    setCityLoading(true);
+
+    const prayerRes = await fetch(
+      `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=1`
+    );
+
+    const prayerData = await prayerRes.json();
+    const timings = prayerData.data.timings;
+
+    const newTimes = {
+      fajr: convertTo12(timings.Fajr),
+      dhuhr: convertTo12(timings.Dhuhr),
+      asr: convertTo12(timings.Asr),
+      maghrib: convertTo12(timings.Maghrib),
+      isha: convertTo12(timings.Isha)
+    };
+
+    setCity(detectedCity);
+    setPrayerTimes(newTimes);
+
+    await updateDoc(doc(db, "users", user.uid), {
+      city: detectedCity,
+      prayerTimes: newTimes
+    });
+
+    setShowCityModal(false);
+
+  } catch (err) {
+    console.error(err);
+    alert("Could not fetch prayer times.");
+  } finally {
+    setCityLoading(false);
+  }
+}
+
+async function handleDetectLocation() {
+  try {
+    setCityLoading(true);
+
+    const position = await Geolocation.getCurrentPosition({
+      enableHighAccuracy: true
+    });
+
+    const { latitude, longitude } = position.coords;
+
+    // Reverse Geocode
+    const geoRes = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+    );
+
+    const geoData = await geoRes.json();
+
+    const detectedCity =
+      geoData.address.city ||
+      geoData.address.town ||
+      geoData.address.state_district ||
+      "Your Location";
+
+    await fetchPrayerByCoords(latitude, longitude, detectedCity);
+
+  } catch (error) {
+    console.error(error);
+    alert("Location permission denied.");
+    setCityLoading(false);
+  }
+}
+
+async function handleCitySelect(selected) {
+  try {
+    setCityLoading(true);
+
+    const res = await fetch(
+      `https://api.aladhan.com/v1/timingsByCity?city=${selected.city}&country=India&method=1`
+    );
+
+    const data = await res.json();
+    const timings = data.data.timings;
+
+    const newTimes = {
+      fajr: convertTo12(timings.Fajr),
+      dhuhr: convertTo12(timings.Dhuhr),
+      asr: convertTo12(timings.Asr),
+      maghrib: convertTo12(timings.Maghrib),
+      isha: convertTo12(timings.Isha)
+    };
+
+    setCity(selected.city);
+    setPrayerTimes(newTimes);
+
+    await updateDoc(doc(db, "users", user.uid), {
+      city: selected.city,
+      prayerTimes: newTimes
+    });
+
+    setShowCityModal(false);
+
+  } catch {
+    alert("Could not fetch prayer times.");
+  } finally {
+    setCityLoading(false);
+  }
+}
 
 useEffect(() => {
   function handleGlobalClick(e) {
@@ -299,6 +480,28 @@ useEffect(() => {
     setActiveNav("home");
   }
 }, [headerExpanded, showProfileSheet]);
+
+
+
+function generateMockTimes(city) {
+  if (city === "Delhi") {
+    return {
+      fajr: "5:20 AM",
+      dhuhr: "1:10 PM",
+      asr: "4:55 PM",
+      maghrib: "6:30 PM",
+      isha: "8:05 PM"
+    };
+  }
+
+  return {
+    fajr: "5:41 AM",
+    dhuhr: "1:30 PM",
+    asr: "5:25 PM",
+    maghrib: "6:43 PM",
+    isha: "8:30 PM"
+  };
+}
 
 async function handleThemeChange(key) {
   if (key === currentTheme) return;
@@ -639,32 +842,32 @@ const quickFeatures = [
     id: "tracker",
     title: "Creator",
     subtitle: "Track Everything",
-    image: "/assets/tracker.png"
+    image: "/assets/tracker.webp"
   },
   {
     id: "qibla",
     title: "Qibla",
     subtitle: "Find direction",
-    image: "/assets/qibla.png"
+    image: "/assets/qibla.webp"
   },
   {
     id: "tasbih",
     title: "Tasbih",
     subtitle: "Digital dhikr counter",
-    image: "/assets/tasbih.png"
+    image: "/assets/tasbih.webp"
   },
   {
     id: "calendar",
     title: "Calendar",
     subtitle: "Islamic dates",
-    image: "/assets/calendar.png",
+    image: "/assets/calendar.webp",
     action: () => setScreen("ramadan")
   },
   {
     id: "mosque",
     title: "Nearby Mosque",
     subtitle: "Find masjid",
-    image: "/assets/mosque.png"
+    image: "/assets/mosque.webp"
   }
 ];
 
@@ -677,14 +880,6 @@ const activePrayerName =
 // ✅ ADD THIS RIGHT HERE
 const activePrayer =
   todayTimes.find(p => p.name === activePrayerName) || nextPrayer;
-
-  if (showLoader) {
-  return (
-    <AppLoader
-      onComplete={() => setShowLoader(false)}
-    />
-  );
-}
   
   if (!welcomeChecked) return null;
 
@@ -706,13 +901,14 @@ if (showWelcome) {
     });
 
     setShowWelcome(false);
-    setShowLoader(true);
   }}
 />
       </motion.div>
     </AnimatePresence>
   );
 }
+
+  
 
   return (
     <motion.div
@@ -726,7 +922,6 @@ if (showWelcome) {
        {/* HEADER */}
     {/* HEADER */}
 <motion.div
-  layout
   drag="y"
   dragDirectionLock
   dragConstraints={{ top: 0, bottom: 0 }}
@@ -863,8 +1058,29 @@ if (showWelcome) {
 
   {/* TOP ROW */}
   <div className="prayer-top">
-    <div className="prayer-location">
-  📍 {city}
+    <div
+  className="prayer-location clickable"
+  onClick={(e) => {
+    e.stopPropagation();
+    setShowCityModal(true);
+  }}
+>
+  📍 {typeof city === "string" ? city : city?.city}
+  <svg
+  className="location-arrow"
+  width="16"
+  height="16"
+  viewBox="0 0 24 24"
+  fill="none"
+>
+  <path
+    d="M6 9l6 6 6-6"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+</svg>
 </div>
 
     <div className="prayer-date">
@@ -974,48 +1190,48 @@ if (showWelcome) {
     >
       {activePrayerName === "Fajr" && (
         <div className="fajr-scene">
-          <img src="/assets/fajr/moon.png" className="fajr-moon" />
-          <img src="/assets/fajr/cloud1.png" className="fajr-cloud fajr-cloud1" />
-          <img src="/assets/fajr/cloud2.png" className="fajr-cloud fajr-cloud2" />
-          <img src="/assets/fajr/small-cloud.png" className="fajr-small-cloud" />
-          <img src="/assets/fajr/star1.png" className="fajr-star fajr-star1" />
-          <img src="/assets/fajr/star2.png" className="fajr-star fajr-star2" />
-          <img src="/assets/fajr/star3.png" className="fajr-star fajr-star3" />
+          <img src="/assets/fajr/moon.webp" className="fajr-moon" />
+          <img src="/assets/fajr/cloud1.webp" className="fajr-cloud fajr-cloud1" />
+          <img src="/assets/fajr/cloud2.webp" className="fajr-cloud fajr-cloud2" />
+          <img src="/assets/fajr/small-cloud.webp" className="fajr-small-cloud" />
+          <img src="/assets/fajr/star1.webp" className="fajr-star fajr-star1" />
+          <img src="/assets/fajr/star2.webp" className="fajr-star fajr-star2" />
+          <img src="/assets/fajr/star3.webp" className="fajr-star fajr-star3" />
         </div>
       )}
 
       {activePrayerName === "Dhuhr" && (
         <div className="dhuhr-scene">
-          <img src="/assets/dhuhr/sun.png" className="dhuhr-sun" />
-          <img src="/assets/dhuhr/cloud.png" className="dhuhr-cloud main-cloud" />
-          <img src="/assets/dhuhr/cloud-small.png" className="dhuhr-small small" />
+          <img src="/assets/dhuhr/sun.webp" className="dhuhr-sun" />
+          <img src="/assets/dhuhr/cloud.webp" className="dhuhr-cloud main-cloud" />
+          <img src="/assets/dhuhr/cloud-small.webp" className="dhuhr-small small" />
         </div>
       )}
 
       {activePrayerName === "Asr" && (
         <div className="asr-scene">
-          <img src="/assets/asr/sun.png" className="asr-sun" />
-          <img src="/assets/asr/cloud1.png" className="asr-cloud asr-cloud1" />
-          <img src="/assets/asr/cloud2.png" className="asr-cloud asr-cloud2" />
+          <img src="/assets/asr/sun.webp" className="asr-sun" />
+          <img src="/assets/asr/cloud1.webp" className="asr-cloud asr-cloud1" />
+          <img src="/assets/asr/cloud2.webp" className="asr-cloud asr-cloud2" />
         </div>
       )}
 
       {activePrayerName === "Maghrib" && (
         <div className="maghrib-scene">
-          <img src="/assets/maghrib/sun.png" className="maghrib-sun" />
-          <img src="/assets/maghrib/cloud1.png" className="maghrib-cloud maghrib-cloud1" />
-          <img src="/assets/maghrib/cloud2.png" className="maghrib-cloud maghrib-cloud2" />
+          <img src="/assets/maghrib/sun.webp" className="maghrib-sun" />
+          <img src="/assets/maghrib/cloud1.webp" className="maghrib-cloud maghrib-cloud1" />
+          <img src="/assets/maghrib/cloud2.webp" className="maghrib-cloud maghrib-cloud2" />
         </div>
       )}
 
       {activePrayerName === "Isha" && (
         <div className="isha-scene">
-          <img src="/assets/isha/moon.png" className="isha-moon" />
-          <img src="/assets/isha/cloud1.png" className="isha-cloud isha-cloud1" />
-          <img src="/assets/isha/cloud2.png" className="isha-cloud isha-cloud2" />
-          <img src="/assets/isha/star1.png" className="isha-star isha-star1" />
-          <img src="/assets/isha/star2.png" className="isha-star isha-star2" />
-          <img src="/assets/isha/star3.png" className="isha-star isha-star3" />
+          <img src="/assets/isha/moon.webp" className="isha-moon" />
+          <img src="/assets/isha/cloud1.webp" className="isha-cloud isha-cloud1" />
+          <img src="/assets/isha/cloud2.webp" className="isha-cloud isha-cloud2" />
+          <img src="/assets/isha/star1.webp" className="isha-star isha-star1" />
+          <img src="/assets/isha/star2.webp" className="isha-star isha-star2" />
+          <img src="/assets/isha/star3.webp" className="isha-star isha-star3" />
         </div>
       )}
     </motion.div>
@@ -1374,7 +1590,178 @@ if (showWelcome) {
   />
 )}
 
+<AnimatePresence>
+  {showCityModal && (
+    <>
+      <motion.div
+        className="city-overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={() => setShowCityModal(false)}
+      />
 
+      <motion.div
+  className="city-modal"
+  initial={{ y: "100%", scale: 0.98, opacity: 0 }}
+  animate={{ y: 0, scale: 1, opacity: 1 }}
+  exit={{ y: "100%", opacity: 0 }}
+  transition={{
+    duration: 0.42,
+    ease: [0.22, 1, 0.36, 1]
+  }}
+  drag="y"
+  dragConstraints={{ top: 0, bottom: 0 }}
+  onDragEnd={(e, info) => {
+    if (info.offset.y > 120) {
+      setShowCityModal(false);
+    }
+  }}
+>
+        <div className="city-header">
+  <div className="sheet-handle" />
+  
+  <div className="city-header-row">
+    <h3>Select Location</h3>
+    <button
+      className="close-btn"
+      onClick={() => setShowCityModal(false)}
+    >
+      ✕
+    </button>
+  </div>
+</div>
+
+        <button
+          className="detect-btn"
+          onClick={handleDetectLocation}
+          disabled={cityLoading}
+        >
+          {cityLoading ? "Detecting..." : "Use Current Location"}
+        </button>
+
+        <div className="city-search-wrapper">
+  <span className="search-icon">🔍</span>
+  <input
+    placeholder="Search your city"
+    value={cityQuery}
+    onChange={(e) => setCityQuery(e.target.value)}
+    className="city-search"
+  />
+</div>
+
+<div className="section-title">Current Location</div>
+
+<div
+  className="current-location-card"
+  onClick={handleDetectLocation}
+>
+  <span className="dot" />
+  <span>{city || "Detect Automatically"}</span>
+  <span className="relocate">Relocate</span>
+</div>
+
+<div className="section-title">Popular Cities</div>
+
+<div className="popular-grid">
+  {["Delhi","Mumbai","Bangalore","Hyderabad","Chennai","Kolkata"]
+    .map(city => (
+      <div
+        key={city}
+        className="popular-chip"
+        onClick={() => {
+          hapticLight();
+          handleCitySelect({ city });
+        }}
+      >
+        {city}
+      </div>
+  ))}
+</div>
+
+        {/* SEARCH RESULTS (when typing) */}
+{cityQuery.length > 0 ? (
+  <div className="city-section-list">
+    {cityResults.map((c, i) => (
+      <div
+  key={i}
+  className="city-row"
+  onClick={() => {
+    hapticLight();
+    handleCitySelect(c);
+  }}
+>
+  <div className="list-city-main">
+    {c.city}
+  </div>
+
+  <div className="list-city-sub">
+    {c.state}
+  </div>
+</div>
+    ))}
+  </div>
+) : (
+  <>
+    {/* ALPHABETICAL LIST */}
+    <div className="city-section-list">
+      {Object.keys(groupedCities).sort().map(letter => (
+        <div key={letter} id={`section-${letter}`}>
+
+          <div className="alphabet-header">
+            {letter}
+          </div>
+
+          {groupedCities[letter].map((c, i) => (
+            <div
+  key={i}
+  className={`city-row ${
+    city === c.city ? "selected" : ""
+  }`}
+  onClick={() => {
+    hapticLight();
+    handleCitySelect(c);
+  }}
+>
+  <div className="list-city-main">
+    {c.city}
+  </div>
+
+  <div className="list-city-sub">
+    {c.state}
+  </div>
+</div>
+          ))}
+
+        </div>
+      ))}
+    </div>
+
+    
+  </>
+)}
+      </motion.div>
+      {/* SIDE ALPHABET INDEX */}
+    <div className="alphabet-index">
+  {Object.keys(groupedCities).sort().map(letter => (
+    <span
+      key={letter}
+      className={activeLetter === letter ? "active-letter" : ""}
+      onClick={() => {
+        hapticLight();
+        document
+          .getElementById(`section-${letter}`)
+          ?.scrollIntoView({ behavior: "smooth" });
+      }}
+    >
+      {letter}
+    </span>
+  ))}
+</div>
+    </>
+  )}
+  
+</AnimatePresence>
 
 <AnimatePresence>
   {activeOffsetPrayer && (
